@@ -1,0 +1,83 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no, width=device-width">
+    <title>DOM事件</title>
+    <link rel="stylesheet" href="https://a.amap.com/jsapi_demos/static/demo-center/css/demo-center.css" />
+    <style>
+        html,
+        body,
+        #container {
+            height: 100%;
+            width: 100%;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="container"></div>
+    <div class="input-card" style="width:18rem;height:10rem">
+        <h4>DOM事件的绑定与解绑</h4>
+        <div>
+            <div class="input-item">
+                <button id="bt1" class="btn" style="margin:0 1rem 1rem 0;">绑定事件</button>
+                <button id="bt2" class="btn" style="margin-bottom:1rem;">解绑事件</button>
+                <button id="bt3" class="btn" style="margin-right:1rem;">清理地图</button>
+                <button id="bt4" class="btn">输出结果</button>
+            </div>
+        </div>
+    </div>
+    <div class="info" id="tip">给页面中的两个按钮绑定事件，绑定后单击地图可添加Marker</div>
+    <script type="text/javascript" src="https://webapi.amap.com/maps?v=1.4.15&key=555f31149dfbbac9f545e0f1a88203dd"></script>
+    <script type="text/javascript">
+        var clickListener, res = [],
+            map = new AMap.Map('container', {
+                resizeEnable: true,
+                center: [116.39, 39.9]
+            });
+        //bt1的click的绑定事件
+        var bind = function() {
+            remove(); //防止重复绑定
+            clickListener = AMap.event.addListener(map, "click", function(e) {
+                console.log(e.lnglat);
+                res.push({
+                    x: e.lnglat.getLng(),
+                    y: e.lnglat.getLat()
+                })
+
+                //添加标记
+                new AMap.Marker({
+                    position: e.lnglat,
+                    map: map
+                });
+            });
+        };
+        // bt2的click的绑定事件
+        var remove = function() {
+            if (clickListener) {
+                AMap.event.removeListener(clickListener); //移除事件，以绑定时返回的对象作为参数
+            }
+        };
+
+
+
+        var button1 = document.getElementById('bt1');
+        var listener1 = AMap.event.addDomListener(button1, 'click', bind); //给div绑定单击事件  
+        var button2 = document.getElementById('bt2');
+        var listener2 = AMap.event.addDomListener(button2, 'click', remove); //给div绑定单击事件
+        var button3 = document.getElementById('bt3');
+        var listener3 = AMap.event.addDomListener(button3, 'click', function() {
+            res = []
+            map.clearMap();
+        }); //给div绑定单击事件
+        var button4 = document.getElementById('bt4');
+        var listener4 = AMap.event.addDomListener(button4, 'click', function() {
+            console.log(res);
+        }); //给div绑定单击事
+    </script>
+</body>
+
+</html>

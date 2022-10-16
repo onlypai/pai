@@ -1,0 +1,29 @@
+@charset "UTF-8";
+
+/*if()*/
+
+.a {
+    color: #aaa;
+}
+
+
+/*@if - @else if - @else*/
+
+.b {
+    color: lightblue;
+}
+
+
+/*@for $var from <start> through <end>和@for $var from <start> to <end>*/
+
+.c1 {
+    width: 121px;
+}
+
+.c2 {
+    width: 122px;
+}
+
+.c3 {
+    width: 123px;
+}

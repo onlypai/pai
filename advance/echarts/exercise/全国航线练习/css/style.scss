@@ -1,0 +1,45 @@
+@mixin wh($num1, $num2) {
+    width: $num1;
+    height: $num2;
+}
+
+@mixin bgu($url) {
+    background-image: url($url);
+    background-repeat: no-repeat;
+    background-size: 100%;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    @include bgu('../images/bg.jpg');
+    @include wh(100%, 100%)
+}
+
+header {
+    @include bgu('../images/head_bg.png');
+    @include wh(100%, 1.25rem);
+    position: relative;
+    h1 {
+        color: #fff;
+        line-height: 1rem;
+        font-size: .45rem;
+        text-align: center;
+    }
+    .time {
+        position: absolute;
+        top: 0;
+        right: .25rem;
+        line-height: 1rem;
+        color: #fff;
+    }
+}
+
+#main {
+    @include wh(6.25rem, 6.25rem);
+    background-color: rgb(240, 116, 116);
+    color: rgb(53, 187, 187);
+}

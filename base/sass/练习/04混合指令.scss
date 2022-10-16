@@ -1,0 +1,80 @@
+//不传参
+// 混合也可以包含选择器和属性，甚至可以用 `&` 引用父选择器
+@mixin box {
+    height: 100px;
+    width: 125px;
+    background-color: #fff;
+    .aa {
+        background-color: rgb(245, 75, 75);
+        cursor: pointer;
+    }
+    &:hover {
+        color: lightcoral;
+        background-color: rgb(96, 230, 136);
+    }
+}
+
+.a {
+    @include box
+}
+
+//传递参数  1、位置传参
+@mixin borderRadius($radius) {
+    -webkit-border-radius: $radius;
+    -moz-border-radius: $radius;
+    -ms-border-radius: $radius;
+    -o-border-radius: $radius;
+    border-radius: $radius;
+}
+
+.b {
+    @include borderRadius(5px) //不用写变量名
+}
+
+//传递参数  2、关键词传参
+@mixin transForm($xx, $yy) {
+    transform: translateX($xx);
+    transform: translateY($yy);
+}
+
+.c {
+    @include transForm($yy: 20px, $xx: 30px) //指定变量名，位置无所谓
+}
+
+.d {
+    @include transForm(20px, 30px) //也可以使用位置传参，会按顺序传递
+}
+
+//不定参数个数
+@mixin margin($num...) {
+    margin: $num;
+}
+
+.e {
+    @include margin(5px, 12px, 15px, 20px)
+}
+
+//参数默认值
+@mixin posi($val:20px) {
+    position: absolute;
+    top: $val;
+    left: 100px
+}
+
+.f {
+    @include posi($val: 50px) // @include posi(50px)//或者
+}
+
+//向混合样式中导入内容    插槽
+@mixin mix1 {
+    background-color: #fff;
+    .ww {
+        @content;
+    }
+}
+
+#aaa {
+    @include mix1 {
+        color: lightcoral;
+    }
+}

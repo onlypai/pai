@@ -1,0 +1,60 @@
+//变量
+$color1:rgba(#454545, 0.2);
+body {
+    color: $color1
+}
+
+//数组
+$arr1:0.1 0.2,
+0.3 0.4;
+$arr2:(0.1 0.2) (0.1 0.2); //两种写法
+
+/*模板字符串*/
+
+$name:box;
+$num:20;
+body .#{$name} {
+    width: 100px;
+    height: 100px;
+    background-color: rgb(216, 144, 144);
+    font-size: #{$num}px;
+    a {
+        //&:父选择器，更好的使用伪类选择器
+        &:hover {
+            background-color: rgb(255, 255, 255);
+            //属性嵌套
+            border: {
+                // 注意，border后面必须加上冒号。
+                color: red;
+            }
+        }
+    }
+}
+
+
+/*继承*/
+
+img {
+    width: 100px;
+    height: 100px;
+}
+
+.b {
+    //这样.b就是继承img的样式属性
+    @extend img;
+    background-color: #fff;
+}
+
+.c {
+    @extend .b
+}
+
+// example1:
+%imgs {
+    //这个img元素相当于模板，并不会产生效果
+    color: red;
+}
+
+.path {
+    @extend %imgs;
+}

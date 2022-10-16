@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://a.amap.com/jsapi_demos/static/demo-center/css/demo-center.css" />
+    <title>Document</title>
+    <style>
+        body {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+        
+        #container {
+            width: 800px;
+            height: 500px;
+            margin: 200px auto;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="container"></div>
+    <button id="addBtn">添加标记</button>
+
+
+    <script type="text/javascript" src="https://webapi.amap.com/maps?v=1.4.15&key=555f31149dfbbac9f545e0f1a88203dd"></script>
+    <script>
+        // 创建地图，并且设置中心点、级别、显示模式、自定义样式等属性
+        var map = new AMap.Map('container', {
+            zoom: 13, //级别:地图细致程度
+            center: [117.137497, 31.832803], //中心点坐标
+            viewMode: '3D', //使用3D视图
+        });
+
+
+        const list = [{
+            "name": "安徽",
+            "center": "117.137497, 31.832803",
+            "type": 1,
+            "subDistricts": []
+        }, {
+            "name": "合肥",
+            "center": "116.137497, 31.832803",
+            "type": 1,
+            "subDistricts": []
+        }, {
+            "name": "六安",
+            "center": "117.137497, 32.832803",
+            "type": 1,
+            "subDistricts": []
+        }, {
+            "name": "哈哈",
+            "center": "118.137497, 31.832803",
+            "type": 1,
+            "subDistricts": []
+        }, ]
+        const markerArr = []
+
+        document.getElementById('addBtn').onclick = function() {
+            addMarker()
+        }
+
+
+        function addMarker() {
+            list.forEach(item => {
+                var marker = new AMap.Marker({
+                    icon: icon(), //icon方式一
+                    position: item.center.split(','),
+                    title: item.name, //hover时的title
+                });
+                map.add(marker); //两种方法都可以将标记添加到地图中
+                markerArr.push(marker)
+            })
+            map.setFitView(); //根据地图上添加的覆盖物分布情况， 自动缩放地图到合适的视野级别
+        }
+
+        function icon() {
+            var icon = new AMap.Icon({
+                size: new AMap.Size(26.5, 34), // 图标尺寸
+                image: '//a.amap.com/jsapi_demos/static/demo-center/icons/poi-marker-red.png', // Icon的图像
+                // imageOffset: new AMap.Pixel(0, -60), // 图像相对展示区域的偏移量，适于雪碧图等
+                imageSize: new AMap.Size(26.5, 34) // 根据所设置的大小拉伸或压缩图片
+            });
+            return icon
+        }
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,31 @@
+@charset "UTF-8";
+body {
+  color: rgba(69, 69, 69, 0.2);
+}
+
+/*模板字符串*/
+body .box {
+  width: 100px;
+  height: 100px;
+  background-color: #d89090;
+  font-size: 20px;
+}
+
+body .box a:hover {
+  background-color: white;
+  border-color: red;
+}
+
+/*继承*/
+img, .b, .c {
+  width: 100px;
+  height: 100px;
+}
+
+.b, .c {
+  background-color: #fff;
+}
+
+.path {
+  color: red;
+}

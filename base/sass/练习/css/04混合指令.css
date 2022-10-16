@@ -1,0 +1,51 @@
+.a {
+  height: 100px;
+  width: 125px;
+  background-color: #fff;
+}
+
+.a .aa {
+  background-color: #f54b4b;
+  cursor: pointer;
+}
+
+.a:hover {
+  color: lightcoral;
+  background-color: #60e688;
+}
+
+.b {
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  -ms-border-radius: 5px;
+  -o-border-radius: 5px;
+  border-radius: 5px;
+}
+
+.c {
+  transform: translateX(30px);
+  transform: translateY(20px);
+}
+
+.d {
+  transform: translateX(20px);
+  transform: translateY(30px);
+}
+
+.e {
+  margin: 5px, 12px, 15px, 20px;
+}
+
+.f {
+  position: absolute;
+  top: 50px;
+  left: 100px;
+}
+
+#aaa {
+  background-color: #fff;
+}
+
+#aaa .ww {
+  color: lightcoral;
+}

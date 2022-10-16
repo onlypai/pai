@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0"
+    />
+    <title>three.js css2d - label</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+      }
+
+      .label {
+        color: #fff;
+        font-family: sans-serif;
+        padding: 0.010417rem;
+        background: rgba(0, 0, 0, 0.6);
+      }
+      /* 渲染器背景 */
+      canvas {
+        background-image: url(imgs/starts.jpg);
+        background-size: cover;
+      }
+    </style>
+  </head>
+
+  <body>
+    <script type="module">
+      import * as THREE from "../libs/build/three.module.js";
+
+      import { OrbitControls } from "../libs/jsm/controls/OrbitControls.js";
+      // 2D的render，可以在页面中渲染出一个div标签，地球月球名称就是渲染出来的，所以模型旋转的时候文字依然能够保持直立和水平
+      import {
+        CSS2DRenderer,
+        CSS2DObject,
+      } from "../libs/jsm/renderers/CSS2DRenderer.js";
+
+      let camera, scene, renderer, labelRenderer;
+      let moon, earth;
+
+      // 时钟
+      const clock = new THREE.Clock();
+      // 实例化纹理加载器(球体表面纹理)
+      const textureLoader = new THREE.TextureLoader();
+
+      init();
+      animate();
+      function init() {
+        // 地球和月球半径大小
+        const EARTH_RADIUS = 2.5;
+        const MOON_RADIUS = 0.27;
+
+        camera = new THREE.PerspectiveCamera(
+          45,
+          window.innerWidth / window.innerHeight,
+          0.1,
+          200
+        ); //相机
+        camera.position.set(10, 5, 20);
+        scene = new THREE.Scene(); //场景
+
+        // 聚光灯光源
+        const dirLight = new THREE.SpotLight(0xffffff);
+        dirLight.position.set(0, 0, 10);
+        dirLight.intensity = 2; //聚光灯亮度的强度
+        dirLight.castShadow = true;
+        scene.add(dirLight);
+
+        // 添加环境光
+        const aLight = new THREE.AmbientLight(0xfffff);
+        aLight.intensity = 0.3;
+        scene.add(aLight);
+
+        // const axesHelper = new THREE.AxesHelper(5);
+        // scene.add(axesHelper);
+
+        //地球
+        const earthGeometry = new THREE.SphereGeometry(EARTH_RADIUS, 16, 16);
+        // MeshPhongMaterial一种用于具有镜面高光的光泽表面的材质。
+        const earthMaterial = new THREE.MeshPhongMaterial({
+          // 材质的高光颜色。默认值为0x111111（深灰色）的颜色Color。
+          // specular: 0x333333,
+          // 镜面反射光强度 默认值30
+          shininess: 5,
+          // 纹理贴图。默认为null。纹理贴图颜色由漫反射颜色.color调节。
+          map: textureLoader.load("textures/planets/earth_atmos_2048.jpg"),
+          // 镜面反射贴图值会影响镜面高光以及环境贴图对表面的影响程度。默认值为null。
+          specularMap: textureLoader.load(
+            "textures/planets/earth_specular_2048.jpg"
+          ),
+          // 用于创建法线贴图的纹理。RGB值会影响每个像素片段的曲面法线，并更改颜色照亮的方式。法线贴图不会改变曲面的实际形状，只会改变光照。
+          normalMap: textureLoader.load(
+            "textures/planets/earth_normal_2048.jpg"
+          ),
+          // 法线贴图对材质的影响程度
+          normalScale: new THREE.Vector2(1, 1),
+        });
+        earth = new THREE.Mesh(earthGeometry, earthMaterial);
+        earth.receiveShadow = true; //接收阴影
+        earth.castShadow = true; //对象是否渲染到阴影贴图当中
+        scene.add(earth);
+
+        //月球
+        const moonGeometry = new THREE.SphereGeometry(MOON_RADIUS, 16, 16);
+        const moonMaterial = new THREE.MeshPhongMaterial({
+          shininess: 5,
+          map: textureLoader.load("textures/planets/moon_1024.jpg"),
+        });
+        moon = new THREE.Mesh(moonGeometry, moonMaterial);
+        moon.castShadow = true;
+        moon.receiveShadow = true;
+        scene.add(moon);
+
+        //地球标签
+        const earthDiv = document.createElement("div");
+        earthDiv.className = "label";
+        earthDiv.textContent = "Earth";
+        earthDiv.style.marginTop = "-1em";
+        const earthLabel = new CSS2DObject(earthDiv);
+        earthLabel.position.set(0, EARTH_RADIUS, 0);
+        earth.add(earthLabel);
+
+        //月球标签
+        const moonDiv = document.createElement("div");
+        moonDiv.className = "label";
+        moonDiv.textContent = "Moon";
+        moonDiv.style.marginTop = "-1em";
+        const moonLabel = new CSS2DObject(moonDiv);
+        moonLabel.position.set(0, MOON_RADIUS, 0);
+        moon.add(moonLabel);
+
+        //渲染器
+        renderer = new THREE.WebGLRenderer({
+          //是否可以设置背景色透明
+          alpha: true,
+        });
+        // 设置像素
+        renderer.setPixelRatio(window.devicePixelRatio);
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        // 渲染阴影
+        renderer.shadowMap.enabled = true;
+        document.body.appendChild(renderer.domElement);
+
+        //标签渲染器
+        labelRenderer = new CSS2DRenderer();
+        labelRenderer.setSize(window.innerWidth, window.innerHeight); //浏览器可视区域大小
+        labelRenderer.domElement.style.position = "absolute";
+        labelRenderer.domElement.style.top = "0rem";
+        document.body.appendChild(labelRenderer.domElement);
+
+        const controls = new OrbitControls(camera, labelRenderer.domElement); //labelRenderer的层级在renderer之上，需要控制labelRenderer
+        controls.minDistance = 5;
+        controls.maxDistance = 100;
+        //是否启动控制器的阻尼（惯性）
+        controls.enableDamping = true;
+
+        window.addEventListener("resize", onWindowResize);
+      }
+
+      function onWindowResize() {
+        //调整相机横纵比始终为
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix(); //调整完之后更新相机
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        labelRenderer.setSize(window.innerWidth, window.innerHeight);
+      }
+
+      function animate() {
+        requestAnimationFrame(animate);
+        const elapsed = clock.getElapsedTime(); //获取当前时间
+        moon.position.set(Math.sin(elapsed) * 5, 0, Math.cos(elapsed) * 5);
+        var axisY = new THREE.Vector3(0, 1, 0);
+        // 围绕y周旋转，多少角度
+        earth.rotateOnAxis(axisY, Math.PI / 128);
+        // earth.rotateY(0.01)//也能旋转地球
+        renderer.render(scene, camera);
+        labelRenderer.render(scene, camera);
+      }
+    </script>
+  </body>
+</html>
