@@ -260,6 +260,20 @@ ssh-keygen -t rsa -C "你的名字/你的邮箱"
 
 ![image-20210815125227965](index.assets/image-20210815125227965.png) 如果你想使用ssh密钥的的方式替代密码验证提交，在克隆仓库的时候就应该使用ssh的方式
 
+### tortoiseGit
+
+#### 删除分支
+
+删除分支，先切换到别的不删除的分支
+
+![image-20221025104949031](index.assets/image-20221025104949031.png) 
+
+![image-20221025105035771](index.assets/image-20221025105035771.png) 
+
+![image-20221025105144245](index.assets/image-20221025105144245.png) 
+
+
+
 ### 错误
 
 #### No supported authentication methods available (server sent: publickey)
