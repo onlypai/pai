@@ -940,7 +940,7 @@ npm i vue-json-editor
 
 ![image-20221116151119461](index.assets/image-20221116151119461.png) 
 
-codeMirror.vue
+codeMirror.vue   @4.0.6
 
 ```vue
 <template>
