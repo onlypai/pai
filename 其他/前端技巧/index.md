@@ -936,5 +936,117 @@ npm i vue-json-editor
 
 2.bin-code-editor
 
+#### 在线代码编辑器 vue-codemirror
+
+![image-20221116151119461](index.assets/image-20221116151119461.png) 
+
+codeMirror.vue
+
+```vue
+<template>
+  <codemirror class="code" ref="editScript" v-model="code.script" :options="cmOption" />
+</template>
+
+<script>
+import { codemirror } from "vue-codemirror"
+
+import "codemirror/lib/codemirror.css"
+import "codemirror/theme/monokai.css"
+import "codemirror/theme/panda-syntax.css"
+
+require("codemirror/lib/codemirror")
+require("codemirror/mode/javascript/javascript")
+
+import "codemirror/addon/hint/show-hint.js"
+import "codemirror/addon/hint/show-hint.css"
+import "codemirror/addon/hint/javascript-hint.js"
+
+import "codemirror/addon/fold/foldgutter.css"
+import "codemirror/addon/fold/foldcode"
+import "codemirror/addon/fold/foldgutter"
+import "codemirror/addon/fold/brace-fold"
+import "codemirror/addon/fold/comment-fold"
+
+export default {
+  components: {
+    codemirror
+  },
+  props: {
+    code: {
+      type: Object
+    }
+  },
+  data() {
+    return {
+      cmOption: {
+        tabSize: 4,
+        lineNumbers: true,
+        line: true,
+        indentWithTabs: true,
+        smartIndent: true,
+        autofocus: true,
+        mode: "text/javascript",
+        theme: "monokai",
+        foldGutter: true,
+        lineWrapping: true,
+        gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter", "CodeMirror-lint-markers"]
+      }
+    }
+  }
+}
+</script>
+<style lang="scss" scoped>
+::v-deep .CodeMirror {
+  height: auto !important;
+  min-height: 500px !important;
+}
+</style>
+```
+
+使用
+
+```js
+<codeMirror :code="editScript"></codeMirror>
+
+    init(item) {
+      this.productKey = item.productKey
+      getScript(item.productKey).then((res) => {
+        const defaultScript = `
+//以下为脚本模版，基于以下模版进行脚本编写
+
+/**
+* 将设备的 自定义格式数据 转换为 标准数据格式，设备 透传/自定义 到物联网平台时调用
+* 入参：rawData 设备自定义格式 字符串 不能为空
+* 出参：jsonStr 标准数据格式 JSON 字符串 不能为空
+*/
+function rawDataToProtocol(rawData) {
+  // rawData 为 设备自定义格式 字符串
+  // jsonMap 为 标准数据格式 JSON 字符串
+        var rawJSON = JSON.parse(rawData);
+        var data = new Object();
+        data.params = {};
+        for(obj in rawJSON){
+                data.params[rawJSON[obj].m] = rawJSON[obj].v;
+        }
+   return JSON.stringify(data);
+}
+`
+        const script = res.data ? res.data.script : defaultScript
+        this.editScript = {
+          id: item.productKey,
+          script: JSON.parse(JSON.stringify(script))
+        }
+
+        this.testDataScript.script =
+          localStorage.getItem("testDataScript2_" + item.productKey) || "{}"
+      })
+    }
+
+
+eval(script)//使用eval函数可以执行js字符串
+```
+
+
+
 
 
