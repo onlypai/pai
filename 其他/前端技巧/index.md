@@ -766,7 +766,7 @@ export default {
 #### 饿了么表单输入数字、小数或负数
 
 ```html
-//正整数       
+//正整数（或者使用.number修饰符）       
     <el-input
               v-model="scope.row.value"
               oninput="value=value.replace(/[^\d]/g,'')"
@@ -780,6 +780,9 @@ export default {
                               if (value.slice(0,value.indexOf('-')+2)!=='-'){if(isNaN(value)){value=null}}"
                   :maxlength="20"
                 />
+//正数，2位小数
+oninput="if(isNaN(value)) { value = null } if(value.indexOf('.')>0){value=value.slice(0,value.indexOf('.')+3)}"
+
 ```
 
 #### ⭐el-dialog中包含el-tabs时关闭时浏览器卡死
