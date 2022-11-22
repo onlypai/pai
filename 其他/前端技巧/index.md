@@ -528,50 +528,115 @@ export default {
 
 ```vue
 <template>
-	<el-upload
-         :class="{ disUoloadSty:noneBtnImg }"
-         :action="dealImgUrl"
-         list-type="picture-card"
-         :on-preview="handleDealImgPreview"
-         :on-remove="handleDealImgRemove"
-         :on-success="successDealImg"
-         :before-upload="beforeUploadDealImg"
-         :on-change="dealImgChange"
-         :file-list="dealImgFileList"
-         accept=".jpeg,.jpg,.gif,.png"
-         :limit="limitCountImg"
+  <el-row>
+    <el-col :span="24">
+      <el-form-item label="图片">
+        <el-upload
+          :class="{ disUoloadSty: noneBtnImg }"
+          :action="uploadUrl"
+          :headers="headers"
+          ref="upload"
+          :multiple="false"
+          list-type="picture-card"
+          :on-remove="handleDealImgRemove"
+          :on-success="successDealImg"
+          :on-change="dealImgChange"
+          :file-list="dealImgFileList"
+          :before-upload="beforeAvatarUpload"
+          accept=".jpeg,.jpg,.png"
+          :limit="limitCountImg"
         >
-         <i class="el-icon-plus"></i>
-    </el-upload>
+          <i class="el-icon-plus"></i>
+        </el-upload>
+      </el-form-item>
+    </el-col>
+  </el-row>
 </template>
 <script>
-	data(){
-        return {
-            noneBtnImg:false,//控制隐藏
-            limitCountImg:1
-        }
+import store from "@/store"
+import { PREVIEWURL } from "@/utils/settings"
+import { mapGetters } from "vuex"
+export default {
+  data() {
+    return {
+      //文件上传
+      noneBtnImg: false, //控制隐藏
+      limitCountImg: 1,
+      dealImgFileList: [],
+      uploadUrl: process.env.VUE_APP_BASE_URL + "/sysfile/upload",
+      headers: {
+        Authorization: "Bearer " + store.state.user.token
+      }
+    }
+  },
+  computed: {
+    ...mapGetters(["token"])
+  },
+  methods: {
+    init(item) {
+      //初始化样式为显示
+      if (item) {
+        //this.form = JSON.parse(JSON.stringify(item))
+        //图片回显
+        this.dealImgFileList.push({ url: PREVIEWURL + item.picture + "?token=" + this.token })
+        this.noneBtnImg = true
+      } else {
+        //this.form.parentId = 0
+      }
     },
-    methods:{
-        init(){
-            //初始化样式为显示
-            this.noneBtnImg = false
-    	},
-        //on-change
-        dealImgChange(file, fileList){
-            this.noneBtnImg = fileList.length >= this.limitCountImg;
-	    },
-        //on-remove
-        handleDealImgRemove(file,fileList){
-		   this.noneBtnImg = fileList.length >= this.limitCountImg;
-	    }
+    handleClose() {
+      //this.form = {}
+      this.noneBtnImg = false
+      this.dealImgFileList = []
     },
+    /**
+     * 文件上传
+     */
+    //on-change
+    dealImgChange(file, fileList) {
+      this.noneBtnImg = fileList.length >= this.limitCountImg
+    },
+    //on-remove
+    handleDealImgRemove(file, fileList) {
+      this.form.picture = ""
+      this.noneBtnImg = fileList.length >= this.limitCountImg
+      this.$message({
+        type: "success",
+        message: "图片移除成功"
+      })
+    },
+    //before-upload
+    beforeAvatarUpload(file) {
+      const isType = file.type === "image/jpeg" || file.type === "image/png"
+      const isLt20M = file.size / 1024 / 1024 < 20
+
+      if (!isType) {
+        this.$message.error("上传图片只能是 JPG/JPEG/PNG 格式!")
+      }
+      if (!isLt20M) {
+        this.$message.error("上传图片大小不能超过 20MB!")
+      }
+      return isType && isLt20M
+    },
+    //on-success
+    successDealImg({ data }) {
+      this.$message({
+        type: "success",
+        message: "图片上传成功"
+      })
+      this.form.picture = data
+    }
+  }
+}
 </script>
 <style>
-    ::v-deep .disUoloadSty .el-upload--picture-card{
-      display:none;   /* 上传按钮隐藏 */
-    }
+::v-deep .disUoloadSty .el-upload--picture-card {
+  display: none; /* 上传按钮隐藏 */
+}
 </style>
 ```
+
+![image-20221118104432087](index.assets/image-20221118104432087.png) ![image-20221118104436852](index.assets/image-20221118104436852.png) 
 
 #### 文件信息、图片转url、文件转base64编码
 
