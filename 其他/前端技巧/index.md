@@ -872,6 +872,8 @@ const reg = /(ht|f)tp(s?)\:\/\/[0-9a-zA-Z]([-.\w]*[0-9a-zA-Z])*(:(0-9)*)*(\/?)([
 
 #### 树形控件[vue-treeselect](https://www.vue-treeselect.cn/)
 
+#### [Avue-基于Element框架](https://avuejs.com/)
+
 #### 视频、音频解码器
 
 官网：https://jsmpeg.com/
@@ -1114,7 +1116,12 @@ function rawDataToProtocol(rawData) {
 eval(script)//使用eval函数可以执行js字符串
 ```
 
+#### cssfx
 
+纯css动画合集    https://cssfx.netlify.app/
 
+![image-20221228141716614](index.assets/image-20221228141716614.png) ![image-20221228141809071](index.assets/image-20221228141809071.png) 
 
+#### [Weather Icons](https://erikflowers.github.io/weather-icons/)
 
+#### [emoji表情](https://emojixd.com/)
